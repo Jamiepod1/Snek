@@ -6,7 +6,7 @@ from random import choice
 HEADING = 0
 CYCLE_COMPLETED = True
 current_positions = [(0, 0), (-20, 0), (-40, 0)]
-
+white_segment = True
 
 def direction(heading):
 
@@ -58,6 +58,7 @@ def move_snek(snek, food):
     global CYCLE_COMPLETED
     global HEADING
     global current_positions
+    global white_segment
 
     append_new_segment = False
 
@@ -67,7 +68,7 @@ def move_snek(snek, food):
         current_y = segment.ycor()
         current_positions.append((current_x, current_y))
 
-    print(current_positions)
+
     move_to_x = current_positions[0][0]
     move_to_y = current_positions[0][1]
     snek[0].setheading(HEADING)
@@ -108,7 +109,12 @@ def move_snek(snek, food):
     if append_new_segment:
         new_segment = Turtle(shape="square")
         new_segment.penup()
-        new_segment.color("white")
+        if white_segment:
+            new_segment.color("white")
+            white_segment = False
+        else:
+            new_segment.color("gray")
+            white_segment = True
         new_segment.goto(new_segment_co_ords)
         snek.append(new_segment)
 
@@ -148,11 +154,15 @@ screen.onkey(west, key="a")
 
 starting_positions = [(0, 0), (-20, 0), (-40, 0)]
 snek = []
-
 for position in current_positions:
     new_segment = Turtle(shape="square")
     new_segment.penup()
-    new_segment.color("white")
+    if white_segment:
+        new_segment.color("white")
+        white_segment = False
+    else:
+        new_segment.color("gray")
+        white_segment = True
     new_segment.goto(position)
     snek.append(new_segment)
 
