@@ -6,7 +6,54 @@ from random import choice
 HEADING = 0
 CYCLE_COMPLETED = True
 current_positions = [(0, 0), (-20, 0), (-40, 0)]
+colour_scheme = ["white", "white", "pink"]
+
 white_segment = True
+
+def main():
+    global HEADING
+    global CYCLE_COMPLETED
+    global current_positions
+    global colour_scheme
+
+
+    screen = Screen()
+    screen.setup(width=600, height=600)
+    screen.title("Snek")
+    screen.bgcolor("black")
+    screen.tracer(0)
+    screen.listen()
+    screen.onkey(north, key="w")
+    screen.onkey(east, key="d")
+    screen.onkey(south, key="s")
+    screen.onkey(west, key="a")
+
+    starting_positions = [(0, 0), (-20, 0), (-40, 0)]
+    snek = []
+    for position in current_positions:
+        new_segment = Turtle(shape="square")
+        new_segment.penup()
+        colour_select = segment_colour_selector(colour_scheme)
+        colour_scheme = segment_colour_changer(colour_scheme)
+        new_segment.color(colour_select)
+
+        new_segment.goto(position)
+        snek.append(new_segment)
+
+    food = Turtle(shape="circle")
+    food.penup()
+    food.color("white")
+
+    place_food(food)
+    screen.update()
+
+    game_is_on = True
+    while game_is_on:
+        game_is_on = move_snek(snek, food, screen)
+        time.sleep(0.1)
+
+    screen.exitonclick()
+
 
 def direction(heading):
 
@@ -54,11 +101,12 @@ def west():
         direction(heading)
 
 
-def move_snek(snek, food):
+def move_snek(snek, food, screen):
     global CYCLE_COMPLETED
     global HEADING
     global current_positions
-    global white_segment
+    global colour_scheme
+
 
     append_new_segment = False
 
@@ -67,7 +115,6 @@ def move_snek(snek, food):
         current_x = segment.xcor()
         current_y = segment.ycor()
         current_positions.append((current_x, current_y))
-
 
     move_to_x = current_positions[0][0]
     move_to_y = current_positions[0][1]
@@ -95,8 +142,6 @@ def move_snek(snek, food):
         new_segment_co_ords = (snek[-1].xcor(), snek[-1].ycor())
         append_new_segment = True
 
-
-
     for i in range(1, len(snek)):
         move_from_x = current_positions[i][0]
         move_from_y = current_positions[i][1]
@@ -105,16 +150,14 @@ def move_snek(snek, food):
         move_to_x = move_from_x
         move_to_y = move_from_y
 
-
     if append_new_segment:
         new_segment = Turtle(shape="square")
         new_segment.penup()
-        if white_segment:
-            new_segment.color("white")
-            white_segment = False
-        else:
-            new_segment.color("gray")
-            white_segment = True
+        colour_select = segment_colour_selector(colour_scheme)
+        colour_scheme = segment_colour_changer(colour_scheme)
+        new_segment.color(colour_select)
+
+
         new_segment.goto(new_segment_co_ords)
         snek.append(new_segment)
 
@@ -138,45 +181,13 @@ def place_food(food):
             food.showturtle()
             return
 
+def segment_colour_selector(colour_scheme):
+    select_segment_colour = colour_scheme[0]
+    return select_segment_colour
+def segment_colour_changer(colour_scheme):
+    colour_scheme.append(colour_scheme[0])
+    return colour_scheme[1:]
 
 
-screen = Screen()
-screen.setup(width=600, height=600)
-screen.title("Snek")
-screen.bgcolor("black")
-screen.tracer(0)
-screen.listen()
-screen.onkey(north, key="w")
-screen.onkey(east, key="d")
-screen.onkey(south, key="s")
-screen.onkey(west, key="a")
 
-
-starting_positions = [(0, 0), (-20, 0), (-40, 0)]
-snek = []
-for position in current_positions:
-    new_segment = Turtle(shape="square")
-    new_segment.penup()
-    if white_segment:
-        new_segment.color("white")
-        white_segment = False
-    else:
-        new_segment.color("gray")
-        white_segment = True
-    new_segment.goto(position)
-    snek.append(new_segment)
-
-food = Turtle(shape="circle")
-food.penup()
-food.color("white")
-
-place_food(food)
-screen.update()
-
-game_is_on = True
-while game_is_on:
-    game_is_on = move_snek(snek, food)
-    time.sleep(0.1)
-
-
-screen.exitonclick()
+main()
