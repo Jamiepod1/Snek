@@ -6,7 +6,12 @@ from random import choice
 HEADING = 0
 CYCLE_COMPLETED = True
 current_positions = [(0, 0), (-20, 0), (-40, 0)]
-colour_scheme = ["white", "white", "pink"]
+colour_options = {
+    "pink and white": ["white", "pink"],
+    "grey and white": ["gray", "white"],
+    "venomous": ["light green", "yellow", "red"]
+}
+colour_scheme = []
 
 white_segment = True
 
@@ -15,6 +20,16 @@ def main():
     global CYCLE_COMPLETED
     global current_positions
     global colour_scheme
+
+    for colour in colour_options:
+        print(colour)
+
+    while True:
+        colour_choice = input("Choose a colour scheme for your snake: ")
+
+        if colour_choice in colour_options:
+            colour_scheme = colour_options[colour_choice]
+            break
 
 
     screen = Screen()
@@ -120,11 +135,11 @@ def move_snek(snek, food, screen):
     move_to_y = current_positions[0][1]
     snek[0].setheading(HEADING)
 
-    if HEADING is 0:
+    if HEADING == 0:
         snek[0].goto(x=move_to_x + 20, y=move_to_y)
-    elif HEADING is 90:
+    elif HEADING == 90:
         snek[0].goto(x=move_to_x, y=move_to_y + 20)
-    elif HEADING is 180:
+    elif HEADING == 180:
         snek[0].goto(x=move_to_x - 20, y=move_to_y)
     else:
         snek[0].goto(x=move_to_x, y=move_to_y - 20)
